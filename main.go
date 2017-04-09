@@ -1,53 +1,38 @@
 package main
 
 import (
-  "github.com/gorilla/websocket"
+  "flag"
   "log"
   "net/http"
 )
 
-// httpのUpgradeヘッダーでwsをつかうようにする
-var upgrader = websocket.Upgrader{}
+var addr = flag.String("addr", ":8080", "http servise address")
 
-// echoするためのハンドラ
-func echo(w http.ResponseWriter, r *http.Request) {
-  // upgrader.Upgradeでhttp -> websocketに変換
-  // webscocketのconnectionオブジェクトを返す
-  conn, err := upgrader.Upgrade(w, r, nil)
-
-  if err != nil {
-    log.Println("upgrade:", err)
+func serveHome(w http.ResponseWriter, r *http.Request) {
+  log.Println(r.URL)
+  if r.URL.Path != "/" {
+    http.Error(w, "Not found", 404)
+    return
   }
 
-  // 関数から抜けるときにコネクションを切断する
-  defer conn.Close()
-
-  // 無限ループ
-  for {
-    // バッファーからメッセージを読む
-    mt, message, err := conn.ReadMessage()
-
-    // readに失敗した場合は、ループを抜ける
-    if err != nil {
-      log.Println("read:", err)
-      break
-    }
-
-    log.Printf("recv: %s", message)
-
-    // バッファーに書き込む
-    err = conn.WriteMessage(mt, message)
-
-    // writeに失敗した場合は、ループを抜ける
-    if err != nil {
-      log.Println("write:", err)
-      break
-    }
+  if r.Method != "GET" {
+    http.Error(w, "Method not allowed", 405)
+    return
   }
+
+  http.ServeFile(w, r, "home.html")
 }
 
 func main() {
-  http.HandleFunc("/echo", echo)
-  http.Handle("/", http.FileServer(http.Dir("./")))
-  log.Fatal(http.ListenAndServe(":9999", nil))
+  flag.Parse()
+  hub := newHub()
+  go hub.run()
+  http.HandleFunc("/", serveHome)
+  http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+    serveWs(hub, w, r)
+  })
+  err := http.ListenAndServe(*addr, nil)
+  if err != nil {
+    log.Fatal("ListenAndServe: ", err)
+  }
 }
