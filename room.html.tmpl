@@ -33,7 +33,7 @@
 
           conn.onopen = function(evt) {
             var item = document.createElement("div");
-            item.innerHTML = "<b>Connected.</b>";
+            item.innerHTML = "<b>Connected to Room {{.RoomId}}.</b>";
             appendLog(item);
           }
 
@@ -80,11 +80,21 @@
         top: 0.5em;
         left: 0.5em;
         right: 0.5em;
-        bottom: 3em;
+        bottom: 5em;
         overflow: auto;
       }
 
       #form {
+        padding: 0 0.5em 0 0.5em;
+        margin: 0%;
+        position: absolute;
+        bottom: 3em;
+        left: 0px;
+        width: 100%;
+        overflow: hidden;
+      }
+
+      #room-list {
         padding: 0 0.5em 0 0.5em;
         margin: 0%;
         position: absolute;
@@ -101,5 +111,6 @@
       <input type="submit" value="Send" />
       <input type="text" id="msg" size="64" />
     </form>
+    <a href="/" id="room-list" >Room List</a>
   </body>
 </html>
