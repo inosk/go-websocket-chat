@@ -4,6 +4,9 @@ import (
   "flag"
   "log"
   "net/http"
+
+  "goji.io"
+  "goji.io/pat"
 )
 
 var addr = flag.String("addr", ":8080", "http servise address")
@@ -25,13 +28,17 @@ func serveHome(w http.ResponseWriter, r *http.Request) {
 
 func main() {
   flag.Parse()
+
   hub := newHub()
   go hub.run()
-  http.HandleFunc("/", serveHome)
-  http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+
+  mux := goji.NewMux()
+  mux.HandleFunc(pat.Get("/"), serveHome)
+  mux.HandleFunc(pat.Get("/ws"), func(w http.ResponseWriter, r *http.Request) {
     serveWs(hub, w, r)
   })
-  err := http.ListenAndServe(*addr, nil)
+
+  err := http.ListenAndServe(*addr, mux)
   if err != nil {
     log.Fatal("ListenAndServe: ", err)
   }
