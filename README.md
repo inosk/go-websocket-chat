@@ -2,6 +2,26 @@
 
 go/websocketでchatの実装
 
+# セットアップ
+
+パッケージ管理にglideを使っているので、  
+$GOPATH/srcに配置しないといけません。
+
+```
+cd $GOPATH/src
+git clone git@github.com:inosk/websocket-chat.git
+cd websocket-chat
+go build
+```
+
+# 使い方
+
+```
+cd $GOPATH/src/websocket-chat
+go build
+./websocket-chat
+```
+
 # コードの説明
 
 コレの写経
