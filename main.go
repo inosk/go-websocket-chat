@@ -4,6 +4,7 @@ import (
   "flag"
   "log"
   "net/http"
+  "html/template"
 
   "goji.io"
   "goji.io/pat"
@@ -23,7 +24,20 @@ func serveHome(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  http.ServeFile(w, r, "home.html")
+  tmpl, parseErr := template.ParseFiles("home.html.tmpl")
+  if parseErr != nil {
+    panic(parseErr)
+  }
+
+  execErr := tmpl.Execute(w, struct {
+    Websocket string
+  }{
+    Websocket: "ws",
+  })
+
+  if execErr != nil {
+    panic(execErr)
+  }
 }
 
 func main() {
