@@ -1,6 +1,11 @@
-hash: 9ae4e5f3fe3220dd4a618a654a9e6eebbb186a701f7b9249b160131caf23bf90
-updated: 2017-02-25T16:52:14.291291779+09:00
+hash: 9270692eeb0966cfa812fb4b3c70330e4f330168a2fe7eec42a69dcf7dbd1bc5
+updated: 2017-08-14T17:13:11.577390857+09:00
 imports:
 - name: github.com/gorilla/websocket
-  version: 3ab3a8b8831546bd18fd182c20687ca853b2bb13
-testImports: []
+  version: ea4d1f681babbce9545c9c5f3d5194a789c89f5b
+- name: goji.io
+  version: 0d89ff54b2c18c9c4ba530e32496aef902d3c6cd
+  subpackages:
+  - internal
+  - pattern
+devImports: []
