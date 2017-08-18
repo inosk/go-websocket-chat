@@ -110,6 +110,7 @@ func (c *Client) writePump() {
         return
       }
     case <-ticker.C:
+      // 定期的にpingして応答がなければ自信を終了する
       c.conn.SetWriteDeadline(time.Now().Add(writeWait))
       if err := c.conn.WriteMessage(websocket.PingMessage, []byte{}); err != nil {
         return
